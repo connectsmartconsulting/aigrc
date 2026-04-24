@@ -1,0 +1,51 @@
+# OWASP Top 10 for LLM Applications 2025
+# Source: https://genai.owasp.org/llm-top-10/
+# Reviewed: 2026-04-23. Next scheduled review: 2026-07-23.
+
+framework: OWASP LLM Top 10
+version: "2025"
+last_reviewed: "2026-04-23"
+
+risks:
+  - id: "LLM01:2025"
+    title: "Prompt Injection"
+    aigrc_coverage: "live_v0.1"
+    aigrc_checks: ["prompt-injection"]
+
+  - id: "LLM02:2025"
+    title: "Sensitive Information Disclosure"
+    aigrc_coverage: "planned_v0.2"
+    aigrc_checks_planned: ["pii-leakage"]
+
+  - id: "LLM03:2025"
+    title: "Supply Chain"
+    aigrc_coverage: "out_of_scope (SBOM-layer)"
+
+  - id: "LLM04:2025"
+    title: "Data and Model Poisoning"
+    aigrc_coverage: "planned_v0.4"
+
+  - id: "LLM05:2025"
+    title: "Improper Output Handling"
+    aigrc_coverage: "planned_v0.3"
+
+  - id: "LLM06:2025"
+    title: "Excessive Agency"
+    aigrc_coverage: "planned_v0.3"
+
+  - id: "LLM07:2025"
+    title: "System Prompt Leakage"
+    aigrc_coverage: "live_v0.1"
+    aigrc_checks: ["prompt-injection"]
+
+  - id: "LLM08:2025"
+    title: "Vector and Embedding Weaknesses"
+    aigrc_coverage: "planned_v0.4"
+
+  - id: "LLM09:2025"
+    title: "Misinformation"
+    aigrc_coverage: "planned_v0.3"
+
+  - id: "LLM10:2025"
+    title: "Unbounded Consumption"
+    aigrc_coverage: "planned_v0.3"

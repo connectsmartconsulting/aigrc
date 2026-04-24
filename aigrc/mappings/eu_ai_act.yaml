@@ -1,0 +1,42 @@
+# EU AI Act (Regulation (EU) 2024/1689)
+# High-risk system obligations applicable from 2 August 2026.
+# Source: Official Journal L series, 12 July 2024.
+# Reviewed: 2026-04-23. Next scheduled review: 2026-07-23.
+
+framework: EU AI Act
+version: "Regulation (EU) 2024/1689"
+last_reviewed: "2026-04-23"
+applicable_from: "2026-08-02"
+
+controls:
+  - id: "Article 9"
+    title: "Risk management system"
+    aigrc_coverage: "planned_v0.4"
+
+  - id: "Article 10"
+    title: "Data and data governance"
+    aigrc_coverage: "out_of_scope (dataset-layer control)"
+
+  - id: "Article 13"
+    title: "Transparency and provision of information to deployers"
+    aigrc_coverage: "planned_v0.3"
+
+  - id: "Article 14"
+    title: "Human oversight"
+    aigrc_coverage: "out_of_scope (process, not testable)"
+
+  - id: "Article 15"
+    title: "Accuracy, robustness, and cybersecurity"
+    description: >
+      High-risk AI systems shall be designed and developed in such a way that they
+      achieve an appropriate level of accuracy, robustness, and cybersecurity, and
+      that they perform consistently in those respects throughout their lifecycle.
+      Specifically resilient as regards attempts by unauthorised third parties to
+      alter their use, outputs, or performance by exploiting system vulnerabilities.
+    aigrc_coverage: "live_v0.1"
+    aigrc_checks: ["prompt-injection"]
+
+  - id: "Annex III(5)(b)"
+    title: "AI systems intended to be used for evaluating creditworthiness of natural persons"
+    note: "Relevant scope trigger for Connect Smart target market (FinTech / financial services)."
+    aigrc_coverage: "scope_trigger (not a testable control itself)"
