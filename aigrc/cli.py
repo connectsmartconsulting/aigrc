@@ -51,6 +51,7 @@ def run_check(
     fail_below: float = typer.Option(0.0, "--fail-below", help="Exit nonzero if pass rate below this percent"),
     report_json: Path = typer.Option(None, "--report-json", help="JSON report path"),
     report_md: Path = typer.Option(None, "--report-md", help="Markdown report path"),
+    report_sarif: Path = typer.Option(None, "--report-sarif", help="SARIF v2.1.0 report path (for GitHub Code Scanning, etc.)"),
 ):
     """Run a check against a target."""
     reg = get_registry()
@@ -93,6 +94,10 @@ def run_check(
     Reporter.write_markdown(result, md_path)
     console.print(f"[dim]Evidence: {json_path}[/dim]")
     console.print(f"[dim]Audit:    {md_path}[/dim]")
+
+    if report_sarif is not None:
+        Reporter.write_sarif(result, report_sarif)
+        console.print(f"[dim]SARIF:    {report_sarif}[/dim]")
 
     if result.pass_rate < fail_below:
         console.print(f"[red]FAIL: pass rate {result.pass_rate:.1f}% below threshold {fail_below}%[/red]")

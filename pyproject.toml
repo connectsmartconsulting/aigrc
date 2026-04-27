@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "aigrc"
-version = "0.1.0"
+version = "0.1.2"
 description = "Executable AI governance checks mapped to NIST AI RMF, EU AI Act, ISO 42001, and OWASP LLM Top 10"
 readme = "README.md"
 requires-python = ">=3.10"
