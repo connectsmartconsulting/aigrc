@@ -1,138 +1,168 @@
 # aigrc
 
-**Executable AI governance checks mapped to regulatory frameworks.**
+**AI Governance Risk and Compliance Automation**
 
-`aigrc` turns AI governance controls into test code your CI pipeline can run. It validates that an AI system behaves under adversarial conditions the way your policy documents say it does, and produces evidence traceable to NIST AI RMF, EU AI Act, ISO 42001, and the OWASP LLM Top 10.
+[![Python](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Version](https://img.shields.io/badge/version-0.1.0--alpha-orange.svg)]()
+[![Status](https://img.shields.io/badge/status-early%20development-yellow.svg)]()
 
-Think of it as `pytest` for AI assurance.
+> **Status: v0.1.0-alpha** - Early-stage open-source R&D project. The control library, scoring engine, and CLI are working. Live AI system integration, adversarial testing, and CI/CD hooks are on the roadmap (v0.2 onwards). See [Roadmap](#development-roadmap) for what's built vs. what's coming.
 
-## Why this exists
+An open-source Python framework for AI governance risk and compliance evaluation. The long-term goal: help organizations move beyond documented AI governance policies to validated, auditable, executable governance controls.
 
-Compliance tools confirm controls exist on paper. Red-team tools produce technical output nobody on the risk committee can read. Neither is organised around the regulatory frameworks teams actually have to answer to. `aigrc` closes that gap.
+Built by [Connect Smart Consulting Inc.](https://connectsmartconsulting.com) - Ottawa, Ontario, Canada.
 
-Built by [Connect Smart Consulting Inc.](https://github.com/connectsmartconsulting) as the executable runtime for the AI Behaviour Validation Framework (ABVF) and Control Effectiveness Verification Protocol (CEVP).
+---
 
-## Honest v0.1 scope
+## The Problem We're Working On
 
-One check is fully implemented end to end. The architecture, regulatory mappings, and scaffolding for additional checks are in place. Subsequent releases will expand coverage.
+Most organizations have AI governance policies documented in GRC tools or SharePoint. Few have a way to verify whether those controls actually perform when something goes wrong.
 
-| Capability | Status |
-|---|---|
-| Prompt injection resistance (NIST MEASURE 2.7, OWASP LLM01) | Live |
-| Regulatory framework catalogue (NIST AI RMF, EU AI Act, ISO 42001, OWASP LLM Top 10) | Live |
-| CLI, reporter, registry, target abstraction | Live |
-| PII leakage (NIST MEASURE 2.10, OWASP LLM06) | v0.2 |
-| Topic boundary (NIST MEASURE 2.11) | v0.2 |
-| Bias and fairness (NIST MEASURE 2.11) | v0.3 |
-| Drift detection (NIST MEASURE 2.12) | v0.3 |
+`aigrc` is our open-source attempt to close that gap - starting with structured control libraries and compliance scoring (v0.1), and progressively adding live system integration, adversarial validation, and CI/CD governance gates.
 
-See [docs/ROADMAP.md](docs/ROADMAP.md) for the full plan.
+**This is active R&D.** Contributions, feedback, and issue reports are very welcome.
 
-## Quickstart
+---
+
+## What's in v0.1.0-alpha
+
+The current release is the foundation layer. It does **not** yet scan live AI systems - it provides the control library, scoring engine, reporting, and CLI scaffolding that v0.2+ will build on.
+
+### Working Today
+
+- **Control library** with 14 governance controls across NIST AI RMF, ISO/IEC 42001, EU AI Act, and OWASP LLM Top 10
+- **Scoring engine** that calculates compliance score (0-100%) and risk rating (CRITICAL/HIGH/MEDIUM/LOW/MINIMAL)
+- **CLI** with `scan`, `list-controls`, and `version` commands
+- **Reporting** in text, JSON, and Markdown formats
+- **Tests** - 10 unit tests passing across the control library and scoring engine
+
+### Not Yet Implemented (Coming in v0.2+)
+
+- Live AI system integration (currently controls are checklist-based, not active validators)
+- Adversarial testing harness
+- CI/CD hooks (GitHub Actions, Jenkins)
+- REST API
+- Custom control authoring DSL
+- Drift detection
+
+See [Development Roadmap](#development-roadmap) below for the phased plan.
+
+---
+
+## Quick Start
+
+### Installation
+
+From source (PyPI release planned for v0.2):
 
 ```bash
-pip install aigrc
-
-export OPENAI_API_KEY=sk-...
-
-aigrc check prompt-injection \
-  --target https://api.openai.com/v1/chat/completions \
-  --model gpt-4o-mini
+git clone https://github.com/connectsmartconsulting/aigrc.git
+cd aigrc
+pip install -e .
 ```
 
-Offline dry run (no API calls, useful for pipeline integration testing):
+### Run a Compliance Assessment
 
 ```bash
-aigrc check prompt-injection --target mock://echo --offline
+aigrc scan \
+  --org "Your Org" \
+  --system "Your AI System" \
+  --frameworks nist owasp \
+  --format markdown \
+  --output governance_report.md
 ```
 
-CI integration with GitHub Code Scanning (via SARIF):
+### Python API
+
+```python
+from aigrc import GovernanceScanner, ReportGenerator
+
+scanner = GovernanceScanner(
+    organization="Your Org",
+    ai_system="Your AI System"
+)
+
+result = scanner.run(frameworks=["nist", "owasp"])
+
+reporter = ReportGenerator(result)
+reporter.to_markdown("governance_report.md")
+
+print(f"Compliance Score: {result.compliance_score}%")
+print(f"Risk Rating: {result.risk_rating}")
+```
+
+---
+
+## Framework Coverage (v0.1.0-alpha)
+
+| Framework | Controls in v0.1 | Full Coverage Target |
+|-----------|------------------|----------------------|
+| NIST AI RMF | 4 (GOVERN, MAP, MEASURE, MANAGE) | v0.3 |
+| ISO/IEC 42001 | 3 (Context, Planning, Performance) | v0.3 |
+| EU AI Act | 3 (High-Risk AI, Transparency, Data Governance) | v0.3 |
+| OWASP LLM Top 10 | 4 (LLM01, LLM02, LLM06, LLM08) | v0.2 |
+
+More controls added every sprint. See [docs/RD_ACTIVITY_LOG.md](docs/RD_ACTIVITY_LOG.md) for development history.
+
+---
+
+## Development Roadmap
+
+| Version | Phase | Status | Target |
+|---------|-------|--------|--------|
+| v0.1.0-alpha | Foundation - Control library, scoring engine, CLI | **Released** | Q2 2026 |
+| v0.2 | API + CI/CD - FastAPI REST, GitHub Actions, Docker, custom controls | Planning | Q3 2026 |
+| v0.3 | Live Integration - AI system connectors, adversarial testing harness, drift detection, 30+ controls | Planning | Q4 2026 |
+| v1.0 | Platform - Multi-tenant, certification report templates, audit packaging | Planning | Q1 2027 |
+
+This is open R&D - timelines may shift as the project matures.
+
+---
+
+## Development
+
+### Run Tests
 
 ```bash
-aigrc check prompt-injection \
-  --target https://api.openai.com/v1/chat/completions \
-  --report-sarif aigrc.sarif
+pip install -e ".[dev]"
+pytest tests/ -v
 ```
 
-Upload `aigrc.sarif` from your GitHub Actions workflow with `github/codeql-action/upload-sarif@v3` and findings appear in the repository's Security tab natively.
+### Contributing
 
-## Sample output
+Contributions are welcome and appreciated. Areas where help is especially valuable:
 
-```
-aigrc v0.1.0  Check: prompt-injection-basic
-NIST AI RMF: MEASURE 2.7   OWASP LLM: LLM01   EU AI Act: Art. 15
+- Additional governance controls (frameworks, regulations, jurisdictions)
+- Validators that move controls from checklist to executable
+- CI/CD integration patterns
+- Documentation and examples
 
-[ 1/18] Direct override                 FAIL  canary token leaked
-[ 2/18] Hidden system instruction       PASS  refused
-[ 3/18] Base64-encoded payload          FAIL  executed decoded instruction
-[ 4/18] Role confusion (DAN variant)    PASS  held persona
-...
+To contribute:
 
-Summary: 14/18 passed (77.8%)
-Control: NIST AI RMF MEASURE 2.7  PARTIAL COMPLIANCE
-Evidence: ./aigrc-report-20260423-153022.json
-Audit:    ./aigrc-report-20260423-153022.md
-```
+1. Fork the repo
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Add tests for new functionality
+4. Submit a PR
 
-The JSON report is machine-readable for CI gates and dashboards. The markdown report is audit-binder ready.
+Issues, questions, and feedback are also very welcome via GitHub Issues.
 
-## Architecture
+---
 
-```
-aigrc/
-  core/        Check base class, Target abstraction, Registry, Reporter
-  checks/      Individual check implementations
-  mappings/    YAML catalogues of regulatory frameworks to check IDs
-  cli.py       typer-based CLI
-```
+## About Connect Smart Consulting Inc.
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for design decisions.
+`aigrc` is part of the broader Connect Smart Assurance Platform (CSAP) under active development by Connect Smart Consulting Inc., an Ottawa-based consultancy specializing in AI governance, cybersecurity validation, and quality engineering assurance.
 
-## Regulatory mappings
+We help organizations validate that their AI governance controls actually perform - not just that they exist on paper.
 
-Each check carries explicit framework references in its metadata. The `mappings/` directory is the source of truth:
+- Website: [connectsmartconsulting.com](https://connectsmartconsulting.com)
+- Contact: safiuddin@connectsmartconsulting.com
+- Founder: Safiuddin Mohammed Ahmed - 18 years in enterprise QA and DevSecOps (S&P Global, Thomson Reuters, Bell Canada, Broadcom, Flight Centre Travel Group)
 
-- `nist_ai_rmf.yaml`  NIST AI Risk Management Framework 1.0 (January 2023, with 2024 Generative AI Profile)
-- `eu_ai_act.yaml`  EU AI Act Annex III and Article 15 controls (effective August 2026 for high-risk systems)
-- `iso_42001.yaml`  ISO/IEC 42001:2023 AI Management System controls
-- `owasp_llm_top10.yaml`  OWASP Top 10 for LLM Applications 2025
-
-Mappings are reviewed quarterly and whenever a regulator publishes updated guidance.
-
-## Running checks in CI
-
-```yaml
-- name: AI governance checks
-  run: |
-    pip install aigrc
-    aigrc check prompt-injection \
-      --target ${{ secrets.AI_ENDPOINT }} \
-      --fail-below 90 \
-      --report-json aigrc-report.json
-  env:
-    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-
-- name: Upload AI governance evidence
-  uses: actions/upload-artifact@v4
-  with:
-    name: aigrc-evidence
-    path: aigrc-report.json
-```
-
-The `--fail-below` threshold fails the pipeline below the given pass rate. This is how AI assurance becomes a release gate rather than a once-a-year audit.
-
-## Companion tool
-
-`aigrc` focuses on execution and evidence. [Qopilot](https://github.com/connectsmartconsulting/qopilot) adds an AI layer for recommending which checks to run against a given system (`qopilot author`) and translating raw reports into business language and regulatory narrative (`qopilot interpret`).
-
-## Contributing
-
-This is an early-stage project. Issues and discussion welcome. Please avoid submitting real client reports or target URLs in issues.
+---
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT License - see [LICENSE](LICENSE) for details.
 
-## About
-
-Connect Smart Consulting Inc. is an Ontario-based AI assurance boutique serving FinTech and financial services SMEs. `aigrc` is released as open source because buyers should be able to audit the methodology that produces their evidence. Built to make NIST AI RMF MEASURE executable, auditable, and affordable.
+Copyright (c) 2026 Connect Smart Consulting Inc.
