@@ -110,7 +110,7 @@ class Reporter:
     @staticmethod
     def write_markdown(result: CheckResult, path: Path) -> Path:
         lines = []
-        lines.append(f"# aigrc evidence report")
+        lines.append("# aigrc evidence report")
         lines.append("")
         lines.append(f"**Check:** `{result.check_id}` v{result.check_version}")
         lines.append(f"**Target:** `{result.target}`")
