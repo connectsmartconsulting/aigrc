@@ -10,6 +10,7 @@ from rich.table import Table
 
 from aigrc import __version__
 from aigrc.checks import prompt_injection_basic  # noqa: F401 - registration
+from aigrc.checks import pii_leakage_basic  # noqa: F401 - registration
 from aigrc.core import Reporter, build_target, get_registry
 from aigrc.core.models import Outcome
 
