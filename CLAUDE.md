@@ -22,3 +22,9 @@ tests/                 — pytest suite (must pass: all green before any commit)
 - Commits follow conventional commits: feat/fix/docs/test/chore(scope): message
 - pytest must pass before every commit — no exceptions
 - CHANGELOG.md updated with every release tag
+
+## Environment
+- Virtual environment: .venv (at repo root)
+- Python: /opt/homebrew/bin/python3
+- Run tests with: .venv/bin/pytest (NOT python -m pytest, NOT path/to/venv/bin/pytest)
+- Activate venv before running: source .venv/bin/activate
