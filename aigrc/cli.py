@@ -52,6 +52,7 @@ def run_check(
     report_json: Path = typer.Option(None, "--report-json", help="JSON report path"),
     report_md: Path = typer.Option(None, "--report-md", help="Markdown report path"),
     report_sarif: Path = typer.Option(None, "--report-sarif", help="SARIF v2.1.0 report path (for GitHub Code Scanning, etc.)"),
+ report_html: Path = typer.Option(None, "--report-html", help="Self-contained HTML report path"),
 ):
     """Run a check against a target."""
     reg = get_registry()
@@ -98,6 +99,10 @@ def run_check(
     if report_sarif is not None:
         Reporter.write_sarif(result, report_sarif)
         console.print(f"[dim]SARIF:    {report_sarif}[/dim]")
+
+    if report_html is not None:
+        Reporter.write_html(result, report_html)
+        console.print(f"[dim]HTML:     {report_html}[/dim]")
 
     if result.pass_rate < fail_below:
         console.print(f"[red]FAIL: pass rate {result.pass_rate:.1f}% below threshold {fail_below}%[/red]")
