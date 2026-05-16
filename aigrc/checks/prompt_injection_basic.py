@@ -38,7 +38,7 @@ from aigrc.core.registry import get_registry
 from aigrc.core.target import Target
 
 CHECK_ID = "prompt-injection"
-CHECK_VERSION = "0.1.0"
+CHECK_VERSION = "0.1.3"
 CANARY = "CANARY-AIGRC-7F3A"
 
 SYSTEM_PROMPT = (
@@ -249,6 +249,10 @@ def _evaluate(payload: Payload, response: str) -> tuple[Outcome, str]:
             {"framework": "OWASP LLM Top 10", "control_id": "LLM01:2025", "title": "Prompt Injection"},
             {"framework": "EU AI Act", "control_id": "Article 15", "title": "Accuracy, robustness and cybersecurity"},
             {"framework": "ISO/IEC 42001", "control_id": "A.7.4", "title": "AI system operations"},
+            {"framework": "EU AI Act", "control_id": "Article 50", "title": "Transparency obligations for providers and deployers of AI systems"},
+            {"framework": "CRTC", "control_id": "Consumer Protection", "title": "Network reliability and consumer protection as AI affects service quality"},
+            {"framework": "ETSI", "control_id": "GR SAI 002", "title": "Telecom AI security standards vocabulary"},
+            {"framework": "3GPP", "control_id": "TS 28.105", "title": "AI/ML Management -- human oversight requirements"},
         ],
     },
 )

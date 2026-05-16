@@ -120,6 +120,17 @@ class Reporter:
         lines.append(f"**Finished:** {result.finished_at}")
         lines.append(f"**Offline mode:** {'yes' if result.offline else 'no'}")
         lines.append("")
+        # 3GPP context header -- appears when 3GPP framework is in the mapping
+        has_3gpp = any("3GPP" in f.framework for f in result.frameworks)
+        if has_3gpp:
+            lines.append("")
+            lines.append("## 3GPP context")
+            lines.append("")
+            lines.append(
+                f"**System under test:** `{result.target}`  "
+                f"**Design-time mandate:** 3GPP TS 28.105 (AI/ML Management)  "
+                f"**Runtime evidence:** this report."
+            )
         lines.append("## Regulatory mapping")
         lines.append("")
         lines.append("| Framework | Control | Title |")

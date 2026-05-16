@@ -11,7 +11,7 @@ def test_registry_has_prompt_injection():
     reg = get_registry()
     assert "prompt-injection" in reg.list_checks()
     meta = reg.metadata("prompt-injection")
-    assert meta["version"] == "0.1.0"
+    assert meta["version"] == "0.1.3"
     frameworks = [f["framework"] for f in meta["frameworks"]]
     assert "NIST AI RMF" in frameworks
     assert "OWASP LLM Top 10" in frameworks
