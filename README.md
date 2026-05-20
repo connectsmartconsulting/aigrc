@@ -5,9 +5,9 @@
 [![CI](https://github.com/connectsmartconsulting/aigrc/actions/workflows/ci.yml/badge.svg)](https://github.com/connectsmartconsulting/aigrc/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.1.2-orange.svg)]()
+[![Version](https://img.shields.io/badge/version-0.1.3-orange.svg)]()
 
-> **v0.1.2** - Two live checks (prompt-injection, pii-leakage), three evidence formats (JSON, SARIF, Markdown), offline mode for CI. No API key required. See [Roadmap](#roadmap) for what is live vs. planned.
+> **v0.1.3** - Two live checks (prompt-injection, pii-leakage), four evidence formats (JSON, SARIF, Markdown, HTML), offline mode for CI. No API key required. See [Roadmap](#roadmap) for what is live vs. planned.
 
 An open-source Python CLI for validating AI system behaviour against governance controls. Built by [Connect Smart Consulting Inc.](https://connectsmartconsulting.com) - Ottawa, Ontario, Canada.
 
@@ -15,7 +15,7 @@ An open-source Python CLI for validating AI system behaviour against governance 
 
 ## What aigrc does
 
-aigrc runs structured adversarial payloads against an AI system and produces evidence artefacts you can put in a compliance file. Every finding maps to specific regulatory controls (NIST AI RMF, EU AI Act, ISO/IEC 42001, OWASP LLM Top 10, PIPEDA).
+aigrc runs structured adversarial payloads against an AI system and produces evidence artefacts you can put in a compliance file. Every finding maps to specific regulatory controls (NIST AI RMF, EU AI Act, ISO/IEC 42001, OWASP LLM Top 10, PIPEDA, CRTC, ETSI GR SAI 002, and 3GPP TS 28.105).
 
 The companion tool [Qopilot](https://github.com/connectsmartconsulting/qopilot) reads aigrc JSON reports and produces business-language audit narratives for risk committees.
 
@@ -35,7 +35,8 @@ Run a prompt injection check against the offline mock target (no API key needed)
 aigrc check prompt-injection --target mock://moderate --offline \
   --report-json report.json \
   --report-md report.md \
-  --report-sarif report.sarif
+  --report-sarif report.sarif \
+  --report-html report.html
 ```
 
 Run against a real OpenAI-compatible endpoint:
@@ -65,11 +66,12 @@ aigrc check <check-id> [options]       Run a check against a target
 | `--report-json PATH` | Write JSON evidence report |
 | `--report-md PATH` | Write Markdown audit report |
 | `--report-sarif PATH` | Write SARIF 2.1.0 report |
+| `--report-html PATH` | Write self-contained HTML evidence report |
 | `--fail-below N` | Exit non-zero if pass rate is below N% (for CI gates) |
 
 ---
 
-## Live checks (v0.1.2)
+## Live checks (v0.1.3)
 
 ### `prompt-injection`
 
@@ -136,6 +138,8 @@ Audit:    aigrc-report-20260505T204614.md
 
 **SARIF 2.1.0** (`--report-sarif`) - Standard static analysis format. Integrates with GitHub Code Scanning, VS Code, and most security dashboards.
 
+**HTML** (`--report-html`) - Self-contained, styled evidence report. Opens in any browser. Suitable for client binder delivery and risk committee presentation. No external dependencies.
+
 ---
 
 ## CI integration
@@ -162,6 +166,17 @@ SARIF results can be uploaded to GitHub Security tab:
 ```
 
 ---
+
+## Telecom vertical
+
+aigrc v0.1.3 adds regulatory metadata for AI-powered applications serving 3GPP-governed networks -- carrier chatbots, billing AI, fraud detection, and NOC tools. Every prompt-injection run now produces a 3GPP context header in the Markdown report and maps findings to:
+
+- CRTC consumer protection mandate
+- EU AI Act Article 50 (transparency for customer-facing AI)
+- ETSI GR SAI 002 (telecom AI security standards)
+- 3GPP TS 28.105 (AI/ML management, human oversight)
+
+Target vertical: AI-powered applications serving 3GPP-governed networks. RAN AI, NWDAF, and embedded 3GPP network functions are explicitly out of scope.
 
 ## Roadmap
 
