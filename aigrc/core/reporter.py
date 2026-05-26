@@ -1,4 +1,4 @@
-"""Report writers: JSON (machine readable), Markdown (audit binder), SARIF (CI security tools)."""
+"""Report writers: JSON (machine readable), Markdown (audit binder), SARIF (CI security tools), HTML (client delivery)."""
 
 from __future__ import annotations
 
@@ -6,6 +6,70 @@ import json
 from pathlib import Path
 
 from aigrc.core.models import CheckResult, Outcome
+
+try:
+    from res.scorer import score_report as _res_score
+    _RES_AVAILABLE = True
+except ImportError:
+    _RES_AVAILABLE = False
+
+
+def _res_panel_html(result: CheckResult) -> str:
+    """Generate RES scorecard HTML panel. Returns empty string if res not installed."""
+    if not _RES_AVAILABLE:
+        return ""
+    try:
+        res_data = _res_score(result.model_dump())
+        overall = res_data["overall_score"]
+        risk = res_data["risk_level"]
+        verdict = res_data["verdict"]
+        score_class = f"score-{risk}"
+
+        layer_cells = ""
+        for lk in ["L1", "L2", "L3", "L4", "L5"]:
+            ld = res_data["layer_scores"][lk]
+            if ld["score"] is None:
+                layer_cells += (
+                    f'<div class="res-layer">'
+                    f'<div class="res-layer-score res-not-tested">&#8212;</div>'
+                    f'<div class="res-layer-name">{ld["name"]}</div>'
+                    f'<div class="res-layer-tag">{lk} &middot; not tested</div>'
+                    f'</div>'
+                )
+            else:
+                sc = ld["score"]
+                if sc >= 90:
+                    sc_class = "score-low"
+                elif sc >= 70:
+                    sc_class = "score-moderate"
+                elif sc >= 50:
+                    sc_class = "score-elevated"
+                else:
+                    sc_class = "score-high"
+                layer_cells += (
+                    f'<div class="res-layer">'
+                    f'<div class="res-layer-score {sc_class}">{sc:.0f}</div>'
+                    f'<div class="res-layer-name">{ld["name"]}</div>'
+                    f'<div class="res-layer-tag">{lk} &middot; {ld["passes"]}/{ld["tested"]}</div>'
+                    f'</div>'
+                )
+
+        return f"""
+  <div class="res-panel">
+    <div class="res-header">
+      <div>
+        <div class="res-title">Resilience Engineering Scorecard (RES v0.1.0)</div>
+        <div class="res-subtitle">AI governance layer assessment &#8212; NIST AI RMF aligned</div>
+      </div>
+      <div class="res-score-block">
+        <div class="res-score-num {score_class}">{overall:.1f}<span class="res-score-denom">/100</span></div>
+        <div class="res-verdict {score_class}">{verdict}</div>
+      </div>
+    </div>
+    <div class="res-layers">{layer_cells}</div>
+  </div>"""
+    except Exception:
+        return ""
 
 
 class Reporter:
@@ -16,15 +80,7 @@ class Reporter:
 
     @staticmethod
     def write_sarif(result: CheckResult, path: Path) -> Path:
-        """Write a SARIF v2.1.0 report.
-
-        SARIF (Static Analysis Results Interchange Format) is the OASIS standard
-        consumed by GitHub Code Scanning, GitLab security dashboards, Azure DevOps,
-        and most modern CI security tooling. Producing SARIF means findings show
-        up natively in those tools without custom parsing.
-
-        Spec: https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html
-        """
+        """Write a SARIF v2.1.0 report."""
         rules = []
         seen_techniques: set[str] = set()
         for p in result.payloads:
@@ -54,9 +110,7 @@ class Reporter:
             results.append({
                 "ruleId": p.technique,
                 "level": "error",
-                "message": {
-                    "text": f"{p.label}: {p.evidence}"
-                },
+                "message": {"text": f"{p.label}: {p.evidence}"},
                 "locations": [{
                     "physicalLocation": {
                         "artifactLocation": {"uri": result.target},
@@ -67,9 +121,7 @@ class Reporter:
                     "payloadId": p.payload_id,
                     "technique": p.technique,
                     "elapsedMs": p.elapsed_ms,
-                    "frameworks": [
-                        f"{f.framework} {f.control_id}" for f in result.frameworks
-                    ],
+                    "frameworks": [f"{f.framework} {f.control_id}" for f in result.frameworks],
                 },
             })
 
@@ -120,7 +172,6 @@ class Reporter:
         lines.append(f"**Finished:** {result.finished_at}")
         lines.append(f"**Offline mode:** {'yes' if result.offline else 'no'}")
         lines.append("")
-        # 3GPP context header -- appears when 3GPP framework is in the mapping
         has_3gpp = any("3GPP" in f.framework for f in result.frameworks)
         if has_3gpp:
             lines.append("")
@@ -169,14 +220,10 @@ class Reporter:
 
     @staticmethod
     def write_html(result: CheckResult, path: Path) -> Path:
-        """Write a self-contained HTML evidence report.
-
-        Single file, no external dependencies. Opens directly in any browser.
-        Suitable for client delivery and audit binders.
-        """
-        pass_color = "#2dd4bf"   # teal
-        fail_color = "#f87171"   # red
-        warn_color = "#fbbf24"   # gold
+        """Write a self-contained HTML evidence report with RES scorecard panel."""
+        pass_color = "#2dd4bf"
+        fail_color = "#f87171"
+        warn_color = "#fbbf24"
 
         summary_color = {
             "COMPLIANT": pass_color,
@@ -210,6 +257,8 @@ class Reporter:
 
         offline_badge = "Yes" if result.offline else "No"
         model_row = f"<tr><td>Model</td><td><code>{result.model_hint}</code></td></tr>" if result.model_hint else ""
+
+        res_panel = _res_panel_html(result)
 
         html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -254,6 +303,29 @@ class Reporter:
   .badge.pass {{ background: #064e3b; color: {pass_color}; }}
   .badge.fail {{ background: #450a0a; color: {fail_color}; }}
   .badge.warn {{ background: #451a03; color: {warn_color}; }}
+  .res-panel {{ background: #0d1e3a; border: 1px solid #1e3a5f; border-radius: 8px;
+                padding: 1.5rem; margin-bottom: 2rem; }}
+  .res-header {{ display: flex; align-items: center; justify-content: space-between;
+                 margin-bottom: 1rem; }}
+  .res-title {{ font-size: 0.7rem; letter-spacing: 0.15em; color: #4a9eda;
+                text-transform: uppercase; font-weight: 600; }}
+  .res-subtitle {{ font-size: 0.8rem; color: #94a3b8; margin-top: 0.2rem; }}
+  .res-score-block {{ text-align: right; }}
+  .res-score-num {{ font-size: 2.5rem; font-weight: 700; line-height: 1; }}
+  .res-score-denom {{ font-size: 1rem; color: #475569; }}
+  .res-verdict {{ font-size: 0.75rem; font-weight: 600; letter-spacing: 0.08em;
+                  text-transform: uppercase; margin-top: 0.2rem; }}
+  .res-layers {{ display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; }}
+  .res-layer {{ background: #1e293b; border-radius: 6px; padding: 0.75rem; text-align: center; }}
+  .res-layer-score {{ font-size: 1.25rem; font-weight: 700; }}
+  .res-layer-name {{ font-size: 0.65rem; color: #94a3b8; text-transform: uppercase;
+                     letter-spacing: 0.06em; margin-top: 0.2rem; }}
+  .res-layer-tag {{ font-size: 0.6rem; color: #475569; margin-top: 0.1rem; }}
+  .res-not-tested {{ color: #475569; }}
+  .score-low {{ color: {pass_color}; }}
+  .score-moderate {{ color: {warn_color}; }}
+  .score-elevated {{ color: #fb923c; }}
+  .score-high {{ color: {fail_color}; }}
   footer {{ margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid #1e293b;
             font-size: 0.75rem; color: #475569; }}
   footer a {{ color: #64b5c8; text-decoration: none; }}
@@ -265,7 +337,7 @@ class Reporter:
     <div class="logo">Connect Smart Consulting Inc. — aigrc v{result.check_version}</div>
     <h1>Evidence Report: <code>{result.check_id}</code></h1>
   </header>
-
+{res_panel}
   <h2>Run details</h2>
   <table>
     <tr><td>Target</td><td><code>{result.target}</code></td></tr>
@@ -308,12 +380,11 @@ class Reporter:
   <footer>
     Generated by <a href="https://github.com/connectsmartconsulting/aigrc">aigrc</a>
     — <a href="https://connectsmartconsulting.com">Connect Smart Consulting Inc.</a>
-    — For audit narrative see
-    <a href="https://github.com/connectsmartconsulting/qopilot">Qopilot</a>.
+    — RES scorecard powered by <a href="https://github.com/connectsmartconsulting/res">res</a>
+    — For audit narrative see <a href="https://github.com/connectsmartconsulting/qopilot">Qopilot</a>.
   </footer>
 </div>
 </body>
 </html>"""
         path.write_text(html, encoding="utf-8")
         return path
-
