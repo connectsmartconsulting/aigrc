@@ -5,9 +5,9 @@
 [![CI](https://github.com/connectsmartconsulting/aigrc/actions/workflows/ci.yml/badge.svg)](https://github.com/connectsmartconsulting/aigrc/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/version-0.1.4-orange.svg)]()
+[![Version](https://img.shields.io/badge/version-0.1.5-orange.svg)]()
 
-> **v0.1.4** - Two live checks (prompt-injection, pii-leakage), four evidence formats (JSON, SARIF, Markdown, HTML), offline mode for CI. Maps to AGCP RG-3 (CR-036 to CR-047) and RG-6 (CR-062 to CR-069). No API key required. See [Roadmap](#roadmap) for what is live vs. planned.
+> **v0.1.5** - Two live checks (prompt-injection, pii-leakage), four evidence formats (JSON, SARIF, Markdown, HTML), offline mode for CI. Maps to AGCP RG-3 (CR-036 to CR-047) and RG-6 (CR-062 to CR-069). No API key required. See [Roadmap](#roadmap) for what is live vs. planned.
 
 An open-source Python CLI for validating AI system behaviour against governance controls. Built by [Connect Smart Consulting Inc.](https://connectsmartconsulting.com) - Ottawa, Ontario, Canada.
 
