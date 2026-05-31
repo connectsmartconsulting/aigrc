@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import hashlib
+import json
+import uuid
 from pathlib import Path
 
 import typer
@@ -19,6 +22,61 @@ app = typer.Typer(
     help="aigrc: executable AI governance checks mapped to regulatory frameworks.",
 )
 console = Console()
+
+# AGCP RG-3 and RG-6 technique to Willis layer mapping
+_TECHNIQUE_TO_LAYER: dict[str, str] = {
+    "direct_override":     "L2",
+    "role_confusion":      "L2",
+    "hypothetical":        "L2",
+    "emotional_framing":   "L2",
+    "language_switch":     "L2",
+    "hierarchy_flip":      "L3",
+    "refusal_suppression": "L3",
+    "task_redirection":    "L3",
+    "scope_violation":     "L3",
+    "encoded_payload":     "L4",
+    "delimiter_injection": "L4",
+    "indirect_injection":  "L4",
+    "unicode_confusable":  "L4",
+    "markdown_injection":  "L4",
+    "data_exfiltration":   "L4",
+    "prompt_leak":         "L5",
+    "pii_direct":          "L2",
+    "pii_indirect":        "L2",
+    "pii_context":         "L3",
+    "pii_encoded":         "L4",
+}
+
+
+def _agcp_fields(result) -> dict:
+    """Compute AGCP Phase 1 conformance fields from a CheckResult."""
+    payload_json = json.dumps(
+        [p.model_dump() for p in result.payloads], sort_keys=True
+    )
+    evidence_hash = hashlib.sha256(payload_json.encode()).hexdigest()
+    evidence_id = str(uuid.uuid4())
+
+    # Tag each payload with its Willis/AGCP layer
+    tagged_payloads = [
+        p.model_copy(update={"agcp_layer": _TECHNIQUE_TO_LAYER.get(p.technique, "L2")})
+        for p in result.payloads
+    ]
+
+    layers_covered = sorted({
+        _TECHNIQUE_TO_LAYER.get(p.technique, "L2") for p in result.payloads
+    })
+
+    return {
+        "evidence_id": evidence_id,
+        "evidence_hash": evidence_hash,
+        "source_system": "aigrc",
+        "evaluation_timestamp": result.started_at,
+        "provenance_chain": [
+            {"tool": "aigrc", "version": __version__, "evidence_hash": evidence_hash}
+        ],
+        "agcp_conformance_levels": layers_covered,
+        "payloads": tagged_payloads,
+    }
 
 
 @app.command("version")
@@ -52,7 +110,7 @@ def run_check(
     report_json: Path = typer.Option(None, "--report-json", help="JSON report path"),
     report_md: Path = typer.Option(None, "--report-md", help="Markdown report path"),
     report_sarif: Path = typer.Option(None, "--report-sarif", help="SARIF v2.1.0 report path (for GitHub Code Scanning, etc.)"),
- report_html: Path = typer.Option(None, "--report-html", help="Self-contained HTML report path"),
+    report_html: Path = typer.Option(None, "--report-html", help="Self-contained HTML report path"),
 ):
     """Run a check against a target."""
     reg = get_registry()
@@ -72,6 +130,9 @@ def run_check(
 
     result = check_fn(tgt, offline=offline)
 
+    # Enrich with AGCP Phase 1 conformance fields
+    result = result.model_copy(update=_agcp_fields(result))
+
     for i, p in enumerate(result.payloads, 1):
         color = {"PASS": "green", "FAIL": "red", "ERROR": "yellow"}[p.outcome.value]
         console.print(
@@ -87,6 +148,9 @@ def run_check(
     primary = result.frameworks[0] if result.frameworks else None
     if primary:
         console.print(f"[bold]Control:[/bold] {primary.framework} {primary.control_id}  {result.summary}")
+
+    console.print(f"[dim]AGCP layers: {', '.join(result.agcp_conformance_levels)}  "
+                  f"Evidence ID: {result.evidence_id[:8]}...[/dim]")
 
     ts = result.started_at.replace(":", "").replace("-", "")[:15]
     json_path = report_json or Path(f"aigrc-report-{ts}.json")

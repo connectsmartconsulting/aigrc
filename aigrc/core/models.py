@@ -31,6 +31,7 @@ class PayloadResult(BaseModel):
     evidence: str
     target_response: str = ""
     elapsed_ms: int = 0
+    agcp_layer: str = ""
 
 
 class CheckResult(BaseModel):
@@ -46,6 +47,14 @@ class CheckResult(BaseModel):
     pass_rate: float
     summary: str
     offline: bool = False
+
+    # AGCP Phase 1 conformance fields
+    evidence_id: str = ""
+    evidence_hash: str = ""
+    source_system: str = "aigrc"
+    evaluation_timestamp: str = ""
+    provenance_chain: list[dict] = []
+    agcp_conformance_levels: list[str] = []
 
     @property
     def passed(self) -> int:
