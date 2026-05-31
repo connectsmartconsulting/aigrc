@@ -59,7 +59,7 @@ def _res_panel_html(result: CheckResult) -> str:
     <div class="res-header">
       <div>
         <div class="res-title">Resilience Engineering Scorecard (RES v0.1.0)</div>
-        <div class="res-subtitle">AI governance layer assessment &#8212; NIST AI RMF aligned</div>
+        <div class="res-subtitle">Willis 5-layer AI governance assessment</div>
       </div>
       <div class="res-score-block">
         <div class="res-score-num {score_class}">{overall:.1f}<span class="res-score-denom">/100</span></div>
