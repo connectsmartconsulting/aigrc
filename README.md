@@ -19,6 +19,8 @@ An open-source Python CLI for validating AI system behaviour against governance 
 
 aigrc runs structured adversarial payloads against an AI system and produces **governance traces** — replayable decision artifacts and execution lineage artifacts you can put in a compliance file. Every finding maps to specific regulatory controls (NIST AI RMF, EU AI Act, ISO/IEC 42001, OWASP LLM Top 10, PIPEDA, CRTC, ETSI GR SAI 002, 3GPP TS 28.105, and Colorado SB205 AI Act).
 
+GAIA documents your agentic AI governance. aigrc validates it works under adversarial conditions.
+
 The companion tool [Qopilot](https://github.com/connectsmartconsulting/qopilot) reads aigrc JSON reports and produces business-language audit narratives for risk committees.
 
 The scoring layer [RES](https://github.com/connectsmartconsulting/res) reads aigrc JSON reports and produces a Willis 5-layer AI governance scorecard (0-100 per layer).
