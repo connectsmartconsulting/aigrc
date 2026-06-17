@@ -49,18 +49,30 @@ _TECHNIQUE_TO_LAYER: dict[str, str] = {
 
 
 def _agcp_fields(result) -> dict:
-    """Compute AGCP Phase 1 conformance fields from a CheckResult."""
-    payload_json = json.dumps(
-        [p.model_dump() for p in result.payloads], sort_keys=True
-    )
-    evidence_hash = hashlib.sha256(payload_json.encode()).hexdigest()
-    evidence_id = str(uuid.uuid4())
+    """Compute AGCP Phase 1 conformance fields from a CheckResult.
 
-    # Tag each payload with its Willis/AGCP layer
+    Evidence hash recipe (documented for independent verification):
+      1. Take the tagged payload list exactly as it appears in the output
+         "payloads" field (each payload's model_dump(), including agcp_layer).
+      2. Serialize with json.dumps(..., sort_keys=True, separators=(",", ":")).
+      3. SHA-256 the UTF-8 encoding of that string; the hex digest is
+         evidence_hash.
+    A verifier can recompute the hash from the published "payloads" array alone.
+    """
+    # Tag each payload with its Willis/AGCP layer FIRST, so the hash covers
+    # exactly the evidence that ships in the "payloads" field.
     tagged_payloads = [
         p.model_copy(update={"agcp_layer": _TECHNIQUE_TO_LAYER.get(p.technique, "L2")})
         for p in result.payloads
     ]
+
+    payload_json = json.dumps(
+        [p.model_dump() for p in tagged_payloads],
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    evidence_hash = hashlib.sha256(payload_json.encode("utf-8")).hexdigest()
+    evidence_id = str(uuid.uuid4())
 
     layers_covered = sorted({
         _TECHNIQUE_TO_LAYER.get(p.technique, "L2") for p in result.payloads
