@@ -2,11 +2,15 @@
 
 Honest delivery plan. Dates are intent, not commitments.
 
-## v0.1.2 (released May 2026) - current
+## v0.1.5 (released June 2026) - current
+
+AGCP Phase 1 Evidence Provider Profile fields in JSON evidence output. Builds on telecom regulatory labels (v0.1.3) and AGCP CR mapping plus Compliance-as-Code header (v0.1.4). 25 tests passing.
+
+## v0.1.2-0.1.4 (released April-June 2026)
 
 Prompt injection resistance check (18 payloads) and pii-leakage check (12 payloads). Full regulatory mappings for NIST AI RMF, EU AI Act, ISO 42001, OWASP LLM Top 10, and PIPEDA. CLI, reporter (JSON/SARIF/Markdown/HTML), registry, target abstraction, offline mock. 25 tests passing.
 
-## v0.1.3 (target May 2026)
+## v0.1.3 (released June 2026) - detail
 
 Regulatory metadata additions to the prompt-injection check. No payload logic change. Makes every aigrc output telecom-credible.
 

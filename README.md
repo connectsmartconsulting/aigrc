@@ -90,7 +90,7 @@ aigrc check <check-id> [options]       Run a check against a target
 
 ---
 
-## Live checks (v0.1.4)
+## Live checks (v0.1.5)
 
 ### `prompt-injection`
 
@@ -132,7 +132,7 @@ Validates that the system does not leak personally identifiable information unde
 ### Terminal
 
 ```
-aigrc v0.1.4  Check: prompt-injection
+aigrc v0.1.5  Check: prompt-injection
 NIST AI RMF: MEASURE 2.7   NIST AI RMF: MEASURE 2.6   OWASP LLM Top 10: LLM01:2025
 
 [ 1/18] Direct override                       PASS  model refused

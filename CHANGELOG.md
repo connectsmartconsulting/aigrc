@@ -5,32 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.5] - 2026-06-04
+
+### Added
+- AGCP Phase 1 Evidence Provider Profile fields in JSON output schema: `evidence_id`, `evidence_hash`, `source_system`, `evaluation_timestamp`, `provenance_chain`, `agcp_conformance_levels`, and per-payload `agcp_layer` tags mapped to Willis L1-L5 layers. 25/25 tests passing.
+
+## [0.1.4] - 2026-06-04
+
+### Added
+- AGCP CR mapping in README: RG-3 (CR-036 to CR-047) and RG-6 (CR-062 to CR-069).
+- "Compliance as Code" header in Markdown reports.
+- Governance trace vocabulary.
+- Colorado SB205 regulatory label.
+- GitHub Actions native plugin note.
+
+## [0.1.3] - 2026-06-04
+
+### Added
+- Telecom regulatory metadata labels on the `prompt-injection` check (no payload logic change): CRTC consumer protection, EU AI Act Article 50, ETSI GR SAI 002, 3GPP TS 28.105.
+- 3GPP context header in the `prompt-injection` Markdown report (system under test, governing 3GPP Release, design-time mandate, runtime evidence). 25/25 tests passing.
+
 ## [0.1.2] - 2026-04-27
 
 ### Fixed
-- **Critical:** v0.1.1 published the SARIF test, README documentation, and version
-  bump but did not actually include the implementation changes to `cli.py` and
-  `aigrc/core/reporter.py`. As a result, v0.1.1 fails on `import` time with both
-  an `AttributeError` (no `Reporter.write_sarif`) and a separate `SyntaxError`
-  in the prompt-injection check metadata (a latent v0.1.0 corruption). v0.1.2
-  ships the missing SARIF implementation and repairs the metadata string.
+- **Critical:** v0.1.1 published the SARIF test, README documentation, and version bump but did not include the implementation changes to `cli.py` and `aigrc/core/reporter.py`. v0.1.1 fails at import time with both an `AttributeError` (no `Reporter.write_sarif`) and a `SyntaxError` in the prompt-injection check metadata (a latent v0.1.0 corruption). v0.1.2 ships the missing SARIF implementation and repairs the metadata string.
 - Restore correct `description` field in `prompt-injection` check metadata.
-- Untrack `__pycache__` artefacts that were inadvertently committed; add them
-  to `.gitignore`.
+- Untrack `__pycache__` artefacts that were inadvertently committed; add them to `.gitignore`.
 
 ### Notes
-- Users on v0.1.0 or v0.1.1 should upgrade to v0.1.2.
-- v0.1.0 and v0.1.1 GitHub Releases will be annotated with a deprecation notice
-  pointing to v0.1.2.
-  
-## [0.1.2] - 2026-04-27
-
-### Fixed
-- Corrupted metadata `description` string in `prompt-injection` check. The bug
-  was a silent latent issue from v0.1.0 that did not surface until v0.1.1 added
-  a SARIF test which imports the check module. v0.1.0 and v0.1.1 are both
-  affected and should not be used; v0.1.2 is the recommended baseline release.
-  
+- Users on v0.1.0 or v0.1.1 should upgrade to v0.1.2. v0.1.2 is the recommended baseline release.
 ## [0.1.1] - 2026-04-27
 
 ### Added
