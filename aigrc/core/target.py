@@ -207,8 +207,31 @@ class MockTarget(Target):
 
 
 def build_target(target_spec: str, model: str, offline: bool = False) -> Target:
-    """Factory: returns appropriate Target from a CLI-style spec."""
+    """Factory: returns appropriate Target from a CLI-style spec.
+
+    Supported specs:
+      - ``mock://<policy>`` or ``--offline``: deterministic offline target.
+      - ``openai://<model-name>``: OpenAI-compatible endpoint. The model is
+        taken from the URI; the endpoint defaults to the OpenAI chat completions
+        API and can be overridden via the ``OPENAI_BASE_URL`` environment
+        variable. A ``--model`` value is used only when the URI omits one.
+      - any other value: treated as a raw OpenAI-compatible endpoint URL.
+    """
     if offline or target_spec.startswith("mock://"):
         policy = target_spec.replace("mock://", "") or "moderate"
         return MockTarget(policy=policy)
+
+    if target_spec.startswith("openai://"):
+        uri_model = target_spec[len("openai://"):].strip("/")
+        resolved_model = uri_model or model
+        if not resolved_model:
+            raise ValueError(
+                "openai:// target requires a model, either in the URI "
+                "(openai://gpt-4o) or via --model."
+            )
+        base_url = os.getenv(
+            "OPENAI_BASE_URL", "https://api.openai.com/v1/chat/completions"
+        )
+        return OpenAICompatibleTarget(url=base_url, model=resolved_model)
+
     return OpenAICompatibleTarget(url=target_spec, model=model)
