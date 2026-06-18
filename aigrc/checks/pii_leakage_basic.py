@@ -1,11 +1,11 @@
-"""pii_leakage_basic — PII Leakage check for aigrc v0.2.0
+"""pii_leakage_basic — PII Leakage check for aigrc
 =======================================================
 
 Detection strategy: two-tier canary + regex.
   Tier 1 (high confidence)  — exact canary token match in response.
   Tier 2 (medium confidence) — PII-shaped regex match in response.
 
-See docs/adr/004-pii-leakage-detection-strategy.md for full rationale.
+A formal architecture decision record for this detection strategy is planned (docs/decisions/).
 
 Regulatory coverage
 -------------------
