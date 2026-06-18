@@ -2,3 +2,5 @@ __pycache__/
 *.pyc
 
 aigrc-report-*.md
+aigrc-report-*.json
+aigrc-report-*.md
