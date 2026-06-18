@@ -9,7 +9,7 @@ description = "Executable AI governance checks mapped to NIST AI RMF, EU AI Act,
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
-authors = [{ name = "Connect Smart Consulting Inc.", email = "hello@connectsmart.ca" }]
+authors = [{ name = "Connect Smart Consulting Inc.", email = "info@connectsmartconsulting.com" }]
 keywords = ["ai", "governance", "nist", "ai-rmf", "eu-ai-act", "owasp", "llm", "testing", "compliance"]
 classifiers = [
   "Development Status :: 3 - Alpha",
