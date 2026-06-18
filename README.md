@@ -80,13 +80,15 @@ aigrc check <check-id> [options]       Run a check against a target
 
 | Flag | Description |
 |------|-------------|
-| `--target` | Target URI: `mock://moderate`, `mock://strict`, `mock://leaky`, or `openai://model-name` |
+| `--target` | Target URI: `mock://moderate`, `mock://strict` (currently aliases `mock://moderate`; reserved for a future stricter policy), `mock://leaky`, or `openai://model-name` |
 | `--offline` | Use deterministic mock target (no API call) |
 | `--report-json PATH` | Write JSON evidence report |
 | `--report-md PATH` | Write Markdown audit report |
 | `--report-sarif PATH` | Write SARIF 2.1.0 report |
 | `--report-html PATH` | Write self-contained HTML evidence report |
 | `--fail-below N` | Exit non-zero if pass rate is below N% (for CI gates) |
+
+**How pass rate is calculated:** pass rate is passed payloads divided by total payloads. Errored payloads (where the target could not be reached or returned an error) count against the pass rate, the same as a failure. This is intentional: an inconclusive test is not a passing test.
 
 ---
 
