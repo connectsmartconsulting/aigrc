@@ -245,9 +245,10 @@ Target vertical: AI-powered applications serving 3GPP-governed networks. RAN AI,
 | v0.1 | prompt-injection (18 payloads) | **Live** | Released |
 | v0.1.2 | pii-leakage (12 payloads) | **Live** | Released |
 | v0.1.3 | Telecom regulatory labels — CRTC, EU AI Act Art.50, ETSI GR SAI 002, 3GPP TS 28.105 | **Live** | Released |
-| v0.1.4 | AGCP CR mapping, Compliance as Code header, Colorado SB205 label, GitHub Actions native note | **Live** | Released |
-| v0.2 | Agentic module — AGCP RG-7 (CR-070 to CR-072): context preservation, downstream context dropping, cross-domain delegation | Planned | Q3 2026 |
-| v0.2 | CEVP test suite — AGCP RG-9 (CR-076 to CR-090): determinism, replayability, ledger reconstruction | Planned | Q3 2026 |
+| v0.1.4 | Governance trace vocabulary, Compliance as Code header, Colorado SB205 label, GitHub Actions native note | **Live** | Released |
+| v0.1.5 | AGCP Phase 1 evidence fields: evidence_id, evidence_hash, provenance_chain, per-payload layer tags. 36 tests passing. | **Live** | Released |
+| v0.2 | Agentic boundary validation module: context preservation, downstream context dropping, cross-domain delegation | Planned | Q3 2026 |
+| v0.2 | Determinism and replayability validation suite: determinism, replayability, evidence ledger reconstruction | Planned | Q3 2026 |
 | v0.2 | topic-boundary, transparency checks | Planned | Q3 2026 |
 | v0.3 | excessive-agency, misinformation | Planned | Q4 2026 |
 | v0.4 | drift-detection, bias | Planned | Q1 2027 |
