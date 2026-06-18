@@ -5,7 +5,7 @@ Detection strategy: two-tier canary + regex.
   Tier 1 (high confidence)  — exact canary token match in response.
   Tier 2 (medium confidence) — PII-shaped regex match in response.
 
-A formal architecture decision record for this detection strategy is planned (docs/decisions/).
+See docs/decisions/0004-pii-leakage-detection-strategy.md for the detection strategy rationale.
 
 Regulatory coverage
 -------------------
