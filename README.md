@@ -9,6 +9,8 @@
 
 > **v0.1.5** - Two live checks (prompt-injection, pii-leakage), four evidence formats (JSON, SARIF, Markdown, HTML), offline mode for CI. Maps to AGCP RG-3 (CR-036 to CR-047) and RG-6 (CR-062 to CR-069). No API key required. See [Roadmap](#roadmap) for what is live vs. planned.
 
+> **Open-core notice:** This repository is part of Connect Smart Consulting Inc.'s open-core tools layer. The code here is MIT-licensed and free for all use. Proprietary methodology, advanced frameworks, and client engagement services are handled separately by Connect Smart Consulting Inc. and are not included in this repository.
+
 An open-source Python CLI for validating AI system behaviour against governance controls. Built by [Connect Smart Consulting Inc.](https://connectsmartconsulting.com) - Ottawa, Ontario, Canada.
 
 > **GitHub Actions native:** aigrc runs as a first-class GitHub Actions step. Add `aigrc check prompt-injection --target $AI_ENDPOINT --report-sarif results.sarif --fail-below 80` to your CI pipeline and findings surface directly in GitHub Code Scanning with zero custom parsing.
@@ -23,7 +25,7 @@ GAIA documents your agentic AI governance. aigrc validates it works under advers
 
 The companion tool [Qopilot](https://github.com/connectsmartconsulting/qopilot) reads aigrc JSON reports and produces business-language audit narratives for risk committees.
 
-The scoring layer [RES](https://github.com/connectsmartconsulting/res) reads aigrc JSON reports and produces a Willis 5-layer AI governance scorecard (0-100 per layer).
+The scoring layer [RES](https://github.com/connectsmartconsulting/res) reads aigrc JSON reports and produces a five-layer AI governance scorecard (0-100 per layer).
 
 ---
 
@@ -268,7 +270,7 @@ ruff check aigrc tests    # lint
 
 The companion platform [Qopilot](https://github.com/connectsmartconsulting/qopilot) translates aigrc governance traces into audit narratives for risk committees and regulators.
 
-The scoring layer [RES](https://github.com/connectsmartconsulting/res) aggregates aigrc findings into a Willis 5-layer governance scorecard.
+The scoring layer [RES](https://github.com/connectsmartconsulting/res) aggregates aigrc findings into a five-layer governance scorecard.
 
 - Website: [connectsmartconsulting.com](https://connectsmartconsulting.com)
 - Contact: safiuddin@connectsmartconsulting.com
